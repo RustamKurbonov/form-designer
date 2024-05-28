@@ -1,0 +1,31 @@
+{
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "printWidth": 100,
+  "proseWrap": "never",
+  "arrowParens": "always",
+  "tabWidth": 2,
+  "importOrder": ["^(?!react)\\w+$", "antd", "^@(.+)", "\\.(c|le|sc)ss$", "^src/.+", "^[./]"],
+  "importOrderSeparation": true,
+  "useTabs": false,
+  "semi": true,
+  "quoteProps": "as-needed",
+  "jsxSingleQuote": true,
+  "bracketSpacing": true,
+  "bracketSameLine": false,
+  "overrides": [
+    {
+      "files": ".prettierrc",
+      "options": {
+        "parser": "json"
+      }
+    },
+    {
+      "files": ["src/**/*.graphql", "custom-directives.graphql"],
+      "options": {
+        "parser": "graphql",
+        "printWidth": 40
+      }
+    }
+  ]
+}
