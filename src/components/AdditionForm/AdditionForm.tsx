@@ -1,6 +1,6 @@
-import { Space } from 'antd';
+import { Row, Col } from 'antd';
 import { Dispatch, FC, SetStateAction } from 'react';
-import { InputForm, SelectForm } from './components';
+import { CheckboxForm, InputForm, SelectForm } from './components';
 
 interface AdditionFormProps {
   onCode: Dispatch<SetStateAction<string>>;
@@ -8,9 +8,16 @@ interface AdditionFormProps {
 
 export const AdditionForm: FC<AdditionFormProps> = ({ onCode }) => {
   return (
-    <Space direction='vertical'>
-      <InputForm onCode={onCode} />
-      <SelectForm onCode={onCode} />
-    </Space>
+    <Row justify='space-between' align='top'>
+      <Col span={24}>
+        <InputForm onCode={onCode} />
+      </Col>
+      <Col span={24}>
+        <SelectForm onCode={onCode} />
+      </Col>
+      <Col span={24}>
+        <CheckboxForm onCode={onCode} />
+      </Col>
+    </Row>
   );
 };

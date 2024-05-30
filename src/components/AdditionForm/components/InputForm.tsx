@@ -38,7 +38,7 @@ export const InputForm: FC<InputFormProps> = ({ onCode }) => {
   return (
     <Space direction='vertical'>
       <Typography.Title level={5}>Добавить текстовое поле</Typography.Title>
-      <Form form={inputForm} layout='inline' onFinish={handleFormFinish}>
+      <Form form={inputForm} onFinish={handleFormFinish}>
         <Form.Item label='Имя' name={fieldNames.name} rules={requiredEntryRule}>
           <Input size='small' placeholder='Введите имя' />
         </Form.Item>

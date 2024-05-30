@@ -22,7 +22,7 @@ export const SelectForm: FC<InputFormProps> = ({ onCode }) => {
     name,
     label,
     required,
-    options,
+    options = [],
   }: SelectSettings): void => {
     onCode(
       (prev) => `${prev} 
@@ -42,7 +42,7 @@ export const SelectForm: FC<InputFormProps> = ({ onCode }) => {
   return (
     <Space direction='vertical'>
       <Typography.Title level={5}>Добавить список</Typography.Title>
-      <Form form={selectForm} layout='inline' onFinish={handleFormFinish}>
+      <Form form={selectForm} onFinish={handleFormFinish}>
         <Form.Item label='Имя' name={fieldNames.name} rules={requiredEntryRule}>
           <Input size='small' placeholder='Введите имя' />
         </Form.Item>
