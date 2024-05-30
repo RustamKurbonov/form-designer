@@ -1,10 +1,11 @@
 import { Button, Checkbox, Form, FormProps, Input, Space, Typography } from 'antd';
 import { Dispatch, FC, SetStateAction } from 'react';
-import { CommonSettings } from '../types';
+import { Code, CommonSettings } from '../../../types';
 import { requiredEntryRule } from '../constants';
+import { v4 as uuidv4 } from 'uuid';
 
 interface CheckboxFormProps {
-  onCode: Dispatch<SetStateAction<string>>;
+  onCode: Dispatch<SetStateAction<Code[]>>;
 }
 
 const fieldNames: Record<keyof CommonSettings, string> = {
@@ -21,12 +22,14 @@ export const CheckboxForm: FC<CheckboxFormProps> = ({ onCode }) => {
     label,
     required,
   }: CommonSettings): void => {
-    onCode(
-      (prev) => `${prev} 
-	<label>${label}</label> 
-	<input type="checkbox" name="${name}" ${required ? 'required' : ''} />
-	`
-    );
+    onCode((prev) => [
+      ...prev,
+      {
+        id: uuidv4(),
+        data: `<label>${label}</label>\n<input type="checkbox" name="${name}" ${required ? 'required' : ''} />\n`,
+        type: 'checkbox',
+      },
+    ]);
 
     checkboxForm.resetFields();
   };

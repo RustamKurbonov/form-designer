@@ -1,3 +1,5 @@
+export type CodeTypes = 'input' | 'select' | 'checkbox';
+
 export interface CommonSettings {
   name: string;
   label: string;
@@ -11,4 +13,10 @@ export interface InputSettings extends CommonSettings {
 
 export interface SelectSettings extends CommonSettings {
   options: { name: string; value: string }[];
+}
+
+export interface Code {
+  id: string;
+  data: string;
+  type: CodeTypes;
 }

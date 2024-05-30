@@ -5,24 +5,22 @@ import { FC, useEffect, useRef, useState } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { copyToClipboard } from '../../utils/copyToClipboard';
+import { Code } from '../../types';
 
 interface EditorProps {
-  code: string;
+  code: Code[];
   onFormReset: () => void;
 }
-
-<form></form>;
 
 export const Editor: FC<EditorProps> = ({ code, onFormReset }) => {
   const [messageAfterCopy, setMessageAfterCopy] = useState<string>('');
 
   const copyToClipboardTimeoutRef = useRef<number>();
 
-  const allCode = `${code}
-  </ form>`;
+  const formattedCode = `<form>\n${code.map(({ data }) => data).join('\n')}\n</form>`;
 
   const handleCopyButtonClick = (): void => {
-    copyToClipboard(allCode)
+    copyToClipboard(formattedCode.toString())
       .then(() => {
         setMessageAfterCopy('Текст скопирован');
         clearTimeout(copyToClipboardTimeoutRef.current);
@@ -47,18 +45,28 @@ export const Editor: FC<EditorProps> = ({ code, onFormReset }) => {
       <Col span={24}>
         <Row justify='end'>
           <Tooltip placement='top' title={messageAfterCopy} open={Boolean(messageAfterCopy)}>
-            <Button type='link' icon={<CopyOutlined />} onClick={handleCopyButtonClick}>
+            <Button
+              type='link'
+              icon={<CopyOutlined />}
+              onClick={handleCopyButtonClick}
+              disabled={!code.length}
+            >
               Скопировать
             </Button>
           </Tooltip>
-          <Button type='link' icon={<DeleteOutlined />} onClick={onFormReset}>
+          <Button
+            type='link'
+            icon={<DeleteOutlined />}
+            onClick={onFormReset}
+            disabled={!code.length}
+          >
             Очистить
           </Button>
         </Row>
       </Col>
       <Col span={24}>
         <SyntaxHighlighter language='react' style={docco}>
-          {allCode}
+          {formattedCode.toString()}
         </SyntaxHighlighter>
       </Col>
     </Row>

@@ -1,9 +1,10 @@
 import { Row, Col } from 'antd';
 import { Dispatch, FC, SetStateAction } from 'react';
 import { CheckboxForm, InputForm, SelectForm } from './components';
+import { Code } from '../../types';
 
 interface AdditionFormProps {
-  onCode: Dispatch<SetStateAction<string>>;
+  onCode: Dispatch<SetStateAction<Code[]>>;
 }
 
 export const AdditionForm: FC<AdditionFormProps> = ({ onCode }) => {

@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { AdditionForm, Editor } from './components';
 import { Row, Col, List, Typography } from 'antd';
-
-export const initState = '<form>';
+import { Code } from './types';
 
 const App = () => {
-  const [code, setCode] = useState(initState);
+  const [code, setCode] = useState<Code[]>([]);
 
   const handleCodeReset = (): void => {
-    setCode(initState);
+    setCode([]);
   };
+
+  console.log(code, 'code');
 
   return (
     <List style={{ padding: 20 }}>

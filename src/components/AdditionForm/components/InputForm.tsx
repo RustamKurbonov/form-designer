@@ -1,10 +1,11 @@
 import { Button, Checkbox, Form, FormProps, Input, Select, Space, Typography } from 'antd';
 import { Dispatch, FC, SetStateAction } from 'react';
-import { InputSettings } from '../types';
+import { Code, InputSettings } from '../../../types';
 import { requiredEntryRule } from '../constants';
+import { v4 as uuidv4 } from 'uuid';
 
 interface InputFormProps {
-  onCode: Dispatch<SetStateAction<string>>;
+  onCode: Dispatch<SetStateAction<Code[]>>;
 }
 
 const fieldNames: Record<keyof InputSettings, string> = {
@@ -27,11 +28,14 @@ export const InputForm: FC<InputFormProps> = ({ onCode }) => {
     placeholder,
     type,
   }: InputSettings): void => {
-    onCode(
-      (prev) => `${prev} 
-      <label>${label}</label> 
-      <input type="${type}" placeholder="${placeholder}" name="${name}" ${required ? 'required' : ''} />`
-    );
+    onCode((prev) => [
+      ...prev,
+      {
+        id: uuidv4(),
+        data: `<label>${label}</label>\n<input type="${type}" placeholder="${placeholder}" name="${name}" ${required ? 'required' : ''} />\n`,
+        type: 'input',
+      },
+    ]);
     inputForm.resetFields();
   };
 

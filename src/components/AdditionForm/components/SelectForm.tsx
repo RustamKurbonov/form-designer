@@ -1,11 +1,12 @@
 import { Button, Checkbox, Form, FormProps, Input, Space, Typography } from 'antd';
 import { Dispatch, FC, SetStateAction } from 'react';
-import { SelectSettings } from '../types';
+import { Code, SelectSettings } from '../../../types';
 import { requiredEntryRule } from '../constants';
 import { CloseOutlined } from '@ant-design/icons';
+import { v4 as uuidv4 } from 'uuid';
 
 interface InputFormProps {
-  onCode: Dispatch<SetStateAction<string>>;
+  onCode: Dispatch<SetStateAction<Code[]>>;
 }
 
 const fieldNames: Record<keyof SelectSettings, string> = {
@@ -24,17 +25,14 @@ export const SelectForm: FC<InputFormProps> = ({ onCode }) => {
     required,
     options = [],
   }: SelectSettings): void => {
-    onCode(
-      (prev) => `${prev} 
-      <label>${label}</label> 
-      <select name="${name}" ${required ? 'required' : ''}>
-      ${options
-        .map((option) => {
-          return `<option value="${option.value}">${option.name}</option>`;
-        })
-        .join(' ')}
-      </select>`
-    );
+    onCode((prev) => [
+      ...prev,
+      {
+        id: uuidv4(),
+        data: `<label>${label}</label>\n<select name="${name}" ${required ? 'required' : ''}>\n${options.map((option) => `<option value="${option.value}">${option.name}</option>`).join('\n')}\n</select>\n`,
+        type: 'select',
+      },
+    ]);
 
     selectForm.resetFields();
   };
