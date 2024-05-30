@@ -31,6 +31,7 @@ export const InputForm: FC<InputFormProps> = ({ onCode }) => {
     onCode((prev) => [
       ...prev,
       {
+        name,
         id: uuidv4(),
         data: `<label>${label}</label>\n<input type="${type}" placeholder="${placeholder}" name="${name}" ${required ? 'required' : ''} />\n`,
         type: 'input',

@@ -1,4 +1,4 @@
-import { Button, Col, Row, Tooltip } from 'antd';
+import { Button, Col, Row, Tag, Tooltip, Typography } from 'antd';
 import { CopyOutlined, DeleteOutlined } from '@ant-design/icons';
 import { FC, useEffect, useRef, useState } from 'react';
 
@@ -7,12 +7,13 @@ import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { copyToClipboard } from '../../utils/copyToClipboard';
 import { Code } from '../../types';
 
-interface EditorProps {
+interface CodeBlockProps {
   code: Code[];
   onFormReset: () => void;
+  onDeleteSetting: (id: string) => void;
 }
 
-export const Editor: FC<EditorProps> = ({ code, onFormReset }) => {
+export const CodeBlock: FC<CodeBlockProps> = ({ code, onFormReset, onDeleteSetting }) => {
   const [messageAfterCopy, setMessageAfterCopy] = useState<string>('');
 
   const copyToClipboardTimeoutRef = useRef<number>();
@@ -43,6 +44,34 @@ export const Editor: FC<EditorProps> = ({ code, onFormReset }) => {
   return (
     <Row gutter={[0, 12]}>
       <Col span={24}>
+        <Typography.Title level={4} style={{ margin: 0 }}>
+          Форма
+        </Typography.Title>
+      </Col>
+      {code.length > 0 && (
+        <Col span={24}>
+          <Typography.Title level={5} style={{ marginTop: 0 }}>
+            Список полей
+          </Typography.Title>
+          {code.map(({ id, name }) => (
+            <Tag
+              closeIcon
+              onClose={() => onDeleteSetting(id)}
+              key={id}
+              onClick={() => console.log('tests')}
+              style={{ cursor: 'pointer' }}
+            >
+              {name}
+            </Tag>
+          ))}
+        </Col>
+      )}
+      <Col span={24}>
+        <SyntaxHighlighter language='react' style={docco}>
+          {formattedCode.toString()}
+        </SyntaxHighlighter>
+      </Col>
+      <Col span={24}>
         <Row justify='end'>
           <Tooltip placement='top' title={messageAfterCopy} open={Boolean(messageAfterCopy)}>
             <Button
@@ -63,11 +92,6 @@ export const Editor: FC<EditorProps> = ({ code, onFormReset }) => {
             Очистить
           </Button>
         </Row>
-      </Col>
-      <Col span={24}>
-        <SyntaxHighlighter language='react' style={docco}>
-          {formattedCode.toString()}
-        </SyntaxHighlighter>
       </Col>
     </Row>
   );

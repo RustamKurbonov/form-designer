@@ -18,5 +18,6 @@ export interface SelectSettings extends CommonSettings {
 export interface Code {
   id: string;
   data: string;
+  name: string;
   type: CodeTypes;
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AdditionForm, Editor } from './components';
+import { AdditionForm, CodeBlock } from './components';
 import { Row, Col, List, Typography } from 'antd';
 import { Code } from './types';
 
@@ -10,7 +10,9 @@ const App = () => {
     setCode([]);
   };
 
-  console.log(code, 'code');
+  const handleDeleteSetting = (id: string): void => {
+    setCode((prev) => prev.filter((setting) => setting.id !== id));
+  };
 
   return (
     <List style={{ padding: 20 }}>
@@ -20,7 +22,11 @@ const App = () => {
           <AdditionForm onCode={setCode} />
         </Col>
         <Col flex='auto'>
-          <Editor code={code} onFormReset={handleCodeReset} />
+          <CodeBlock
+            code={code}
+            onFormReset={handleCodeReset}
+            onDeleteSetting={handleDeleteSetting}
+          />
         </Col>
       </Row>
     </List>

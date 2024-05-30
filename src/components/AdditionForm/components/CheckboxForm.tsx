@@ -25,6 +25,7 @@ export const CheckboxForm: FC<CheckboxFormProps> = ({ onCode }) => {
     onCode((prev) => [
       ...prev,
       {
+        name,
         id: uuidv4(),
         data: `<label>${label}</label>\n<input type="checkbox" name="${name}" ${required ? 'required' : ''} />\n`,
         type: 'checkbox',

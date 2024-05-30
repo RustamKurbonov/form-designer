@@ -28,6 +28,7 @@ export const SelectForm: FC<InputFormProps> = ({ onCode }) => {
     onCode((prev) => [
       ...prev,
       {
+        name,
         id: uuidv4(),
         data: `<label>${label}</label>\n<select name="${name}" ${required ? 'required' : ''}>\n${options.map((option) => `<option value="${option.value}">${option.name}</option>`).join('\n')}\n</select>\n`,
         type: 'select',
