@@ -2,8 +2,14 @@ import { useState } from 'react';
 import { AdditionForm, Editor } from './components';
 import { Row, Col, List, Typography } from 'antd';
 
+export const initState = '<form>';
+
 const App = () => {
-  const [code, setCode] = useState('<form>');
+  const [code, setCode] = useState(initState);
+
+  const handleCodeReset = (): void => {
+    setCode(initState);
+  };
 
   return (
     <List style={{ padding: 20 }}>
@@ -13,7 +19,7 @@ const App = () => {
           <AdditionForm onCode={setCode} />
         </Col>
         <Col flex='auto'>
-          <Editor code={code} />
+          <Editor code={code} onFormReset={handleCodeReset} />
         </Col>
       </Row>
     </List>
