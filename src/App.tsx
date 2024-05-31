@@ -11,7 +11,7 @@ const App = () => {
           <Col flex='0 0 380px'>
             <AdditionForm />
           </Col>
-          <Col flex='auto'>
+          <Col flex='0 0 calc(100% - 380px)'>
             <CodeBlock />
           </Col>
         </Row>

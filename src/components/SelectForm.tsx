@@ -46,7 +46,7 @@ export const SelectForm: FC<SelectFormProps> = ({ initValue, onFormFinish }) => 
   }, [initValue]);
 
   return (
-    <Space direction='vertical'>
+    <Space direction='vertical' style={{ width: '100%' }}>
       <Typography.Title level={5}>Добавить список</Typography.Title>
       <Form form={selectForm} onFinish={handleFormFinish}>
         <Form.Item label='Имя' name={fieldNames.name} rules={requiredEntryRule}>

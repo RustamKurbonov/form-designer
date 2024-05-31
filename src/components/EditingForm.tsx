@@ -1,4 +1,4 @@
-import { Modal } from 'antd';
+import { Col, Modal, Row } from 'antd';
 import { FC, ReactNode, useContext } from 'react';
 import { InputForm } from './InputForm';
 import { CheckboxForm } from './CheckboxForm';
@@ -14,8 +14,15 @@ interface EditingFormProps {
 export const EditingForm: FC<EditingFormProps> = ({ code, onClose }) => {
   const codeContext = useContext(CodeContext);
 
-  const handleFormFinish = (code: FormFragment): void => {
-    codeContext?.onFormFragment((prev) => [...prev.filter(({ id }) => id !== code.id), code]);
+  const handleFormFinish = (fragment: FormFragment): void => {
+    const test = codeContext?.formFragments.map((data) => {
+      if (fragment.id === data.id) {
+        return fragment;
+      }
+      return data;
+    });
+
+    codeContext?.onFormFragment(test || []);
     onClose();
   };
 
@@ -32,7 +39,9 @@ export const EditingForm: FC<EditingFormProps> = ({ code, onClose }) => {
       onCancel={() => onClose()}
       footer={false}
     >
-      {forms?.[code.type]}
+      <Row justify='space-between' align='top'>
+        <Col span={24}>{forms?.[code.type]}</Col>
+      </Row>
     </Modal>
   );
 };

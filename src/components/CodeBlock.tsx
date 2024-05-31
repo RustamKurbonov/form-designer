@@ -7,6 +7,7 @@ import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { copyToClipboard } from '../utils/copyToClipboard';
 import { FormControls } from './FormControls';
 import { CodeContext } from '../context/CodeContext';
+import { converterHtml } from '../utils/converterHtml';
 
 export const CodeBlock: FC = () => {
   const [messageAfterCopy, setMessageAfterCopy] = useState<string>('');
@@ -15,7 +16,7 @@ export const CodeBlock: FC = () => {
 
   const formFragments = codeContext?.formFragments;
 
-  const formattedForm = `<form>\n${formFragments?.map(({ data }) => data).join('\n')}\n</form>`;
+  const formattedForm = converterHtml(formFragments || []);
 
   const handleCopyButtonClick = (): void => {
     copyToClipboard(formattedForm.toString())
@@ -36,8 +37,6 @@ export const CodeBlock: FC = () => {
 
   const handleCodeReset = (): void => codeContext?.onFormFragment([]);
 
-  console.log(codeContext?.formFragments, 'formFragments');
-
   useEffect(() => {
     return () => clearTimeout(copyToClipboardTimeoutRef.current);
   }, []);
@@ -47,7 +46,7 @@ export const CodeBlock: FC = () => {
       <FormControls />
       <Col span={24}>
         <SyntaxHighlighter language='react' style={docco}>
-          {formattedForm.toString()}
+          {formattedForm}
         </SyntaxHighlighter>
       </Col>
       <Col span={24}>

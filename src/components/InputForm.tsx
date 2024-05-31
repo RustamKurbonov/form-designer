@@ -49,7 +49,7 @@ export const InputForm: FC<InputFormProps> = ({ initValue, onFormFinish }) => {
   }, [initValue]);
 
   return (
-    <Space direction='vertical'>
+    <Space direction='vertical' style={{ width: '100%' }}>
       <Typography.Title level={5}>Добавить текстовое поле</Typography.Title>
       <Form form={inputForm} onFinish={handleFormFinish}>
         <Form.Item label='Имя' name={fieldNames.name} rules={requiredEntryRule}>

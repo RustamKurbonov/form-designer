@@ -1,8 +1,18 @@
-export const converterHtml = () => {};
+import { FormFragment, FragmentTypes } from '../types';
 
-//input
-//        data: `<label>${label}</label>\n<input type="${type}" placeholder="${placeholder}" name="${name}" ${required ? 'required' : ''} />\n`,
-//select
-//        data: `<label>${label}</label>\n<select name="${name}" ${required ? 'required' : ''}>\n${options.map((option) => `<option value="${option.value}">${option.name}</option>`).join('\n')}\n</select>\n`,
-//checkbox
-// data: `<label>${label}</label>\n<input type="checkbox" name="${name}" ${required ? 'required' : ''} />\n`,
+export const converterHtml = (fragments: FormFragment[]): string => {
+  return `<form>\n${fragments
+    .map((fragment) => {
+      switch (fragment.type) {
+        case FragmentTypes.Input:
+          return `<label>${fragment.data.label}</label>\n<input placeholder="${fragment.data.placeholder || ''}" type="${fragment.data.type || ''}" name="${fragment.data.name}" ${fragment.data.required ? 'required' : ''} />\n`;
+
+        case FragmentTypes.Select:
+          return `<label>${fragment.data.label}</label>\n<select name="${fragment.data.name}" ${fragment.data.required ? 'required' : ''}>\n${fragment.data.options.map((option) => `<option value="${option.value}">${option.name}</option>`).join('\n')}\n</select>\n`;
+
+        case FragmentTypes.Checkbox:
+          return `<label>${fragment.data.label}</label>\n<input type="checkbox" name="${fragment.data.name}" ${fragment.data.required ? 'required' : ''} />\n`;
+      }
+    })
+    .join(' ')}</form>`;
+};
