@@ -1,11 +1,12 @@
-import { Button, Checkbox, Form, FormInstance, Input, Select, Space, Typography } from 'antd';
-import { FC } from 'react';
-import { InputField } from '../types';
+import { Button, Checkbox, Form, FormProps, Input, Select, Space, Typography } from 'antd';
+import { FC, useEffect } from 'react';
+import { InputField, Code, CodeTypes } from '../types';
 import { requiredEntryRule } from '../constants';
+import { v4 as uuidv4 } from 'uuid';
 
 interface InputFormProps {
-  form: FormInstance<InputField>;
-  onFormFinish: (values: InputField) => void;
+  initValue?: Code;
+  onFormFinish: (values: Code) => void;
 }
 
 const fieldNames: Record<keyof InputField, string> = {
@@ -18,11 +19,39 @@ const fieldNames: Record<keyof InputField, string> = {
 
 const inputTypes: string[] = ['text', 'email', 'phone', 'number'];
 
-export const InputForm: FC<InputFormProps> = ({ form, onFormFinish }) => {
+export const InputForm: FC<InputFormProps> = ({ initValue, onFormFinish }) => {
+  const [inputForm] = Form.useForm<InputField>();
+
+  const handleFormFinish: FormProps['onFinish'] = ({
+    label,
+    name,
+    placeholder,
+    required,
+    type,
+  }: InputField): void => {
+    onFormFinish({
+      type: CodeTypes.Input,
+      id: initValue?.id || uuidv4(),
+      data: { name, label, required, placeholder, type },
+    });
+
+    inputForm.resetFields();
+  };
+
+  useEffect(() => {
+    if (initValue) {
+      const { data, type: codeType } = initValue;
+
+      if (codeType === CodeTypes.Input) {
+        inputForm.setFieldsValue(data);
+      }
+    }
+  }, [initValue]);
+
   return (
     <Space direction='vertical'>
       <Typography.Title level={5}>Добавить текстовое поле</Typography.Title>
-      <Form form={form} onFinish={onFormFinish}>
+      <Form form={inputForm} onFinish={handleFormFinish}>
         <Form.Item label='Имя' name={fieldNames.name} rules={requiredEntryRule}>
           <Input size='small' placeholder='Введите имя' />
         </Form.Item>
@@ -44,7 +73,7 @@ export const InputForm: FC<InputFormProps> = ({ form, onFormFinish }) => {
           <Checkbox />
         </Form.Item>
         <Button type='primary' htmlType='submit' size='small'>
-          Добавить
+          {initValue ? 'Изменить' : 'Добавить'}
         </Button>
       </Form>
     </Space>

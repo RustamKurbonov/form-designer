@@ -1,24 +1,24 @@
-import { Button, Col, Row, Tag, Tooltip, Typography } from 'antd';
+import { Button, Col, Row, Tooltip } from 'antd';
 import { CopyOutlined, DeleteOutlined } from '@ant-design/icons';
-import { FC, useEffect, useRef, useState } from 'react';
+import { Dispatch, FC, SetStateAction, useEffect, useRef, useState } from 'react';
 
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { Code } from '../types';
 import { copyToClipboard } from '../utils/copyToClipboard';
+import { FormControls } from './FormControls';
 
 interface CodeBlockProps {
-  code: Code[];
-  onFormReset: () => void;
-  onDeleteSetting: (id: string) => void;
+  codes: Code[];
+  onCode: Dispatch<SetStateAction<Code[]>>;
 }
 
-export const CodeBlock: FC<CodeBlockProps> = ({ code, onFormReset, onDeleteSetting }) => {
+export const CodeBlock: FC<CodeBlockProps> = ({ codes, onCode }) => {
   const [messageAfterCopy, setMessageAfterCopy] = useState<string>('');
 
   const copyToClipboardTimeoutRef = useRef<number>();
 
-  const formattedCode = `<form>\n${code.map(({ data }) => data).join('\n')}\n</form>`;
+  const formattedCode = `<form>\n${codes.map(({ data }) => data).join('\n')}\n</form>`;
 
   const handleCopyButtonClick = (): void => {
     copyToClipboard(formattedCode.toString())
@@ -36,7 +36,10 @@ export const CodeBlock: FC<CodeBlockProps> = ({ code, onFormReset, onDeleteSetti
         }, 3000);
       });
   };
-  console.log(code, 'code');
+
+  console.log(codes, 'code');
+
+  const handleCodeReset = (): void => onCode([]);
 
   useEffect(() => {
     return () => clearTimeout(copyToClipboardTimeoutRef.current);
@@ -44,29 +47,7 @@ export const CodeBlock: FC<CodeBlockProps> = ({ code, onFormReset, onDeleteSetti
 
   return (
     <Row gutter={[0, 12]}>
-      <Col span={24}>
-        <Typography.Title level={4} style={{ margin: 0 }}>
-          Форма
-        </Typography.Title>
-      </Col>
-      {code.length > 0 && (
-        <Col span={24}>
-          <Typography.Title level={5} style={{ marginTop: 0 }}>
-            Список полей
-          </Typography.Title>
-          {code.map(({ id, data }) => (
-            <Tag
-              closeIcon
-              onClose={() => onDeleteSetting(id)}
-              key={id}
-              onClick={() => console.log('tests')}
-              style={{ cursor: 'pointer' }}
-            >
-              {data.name}
-            </Tag>
-          ))}
-        </Col>
-      )}
+      <FormControls codes={codes} onCode={onCode} />
       <Col span={24}>
         <SyntaxHighlighter language='react' style={docco}>
           {formattedCode.toString()}
@@ -79,7 +60,7 @@ export const CodeBlock: FC<CodeBlockProps> = ({ code, onFormReset, onDeleteSetti
               type='link'
               icon={<CopyOutlined />}
               onClick={handleCopyButtonClick}
-              disabled={!code.length}
+              disabled={!codes.length}
             >
               Скопировать
             </Button>
@@ -87,8 +68,8 @@ export const CodeBlock: FC<CodeBlockProps> = ({ code, onFormReset, onDeleteSetti
           <Button
             type='link'
             icon={<DeleteOutlined />}
-            onClick={onFormReset}
-            disabled={!code.length}
+            onClick={handleCodeReset}
+            disabled={!codes.length}
           >
             Очистить
           </Button>

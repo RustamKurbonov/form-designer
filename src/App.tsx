@@ -6,14 +6,6 @@ import { Code } from './types';
 const App = () => {
   const [code, setCode] = useState<Code[]>([]);
 
-  const handleCodeReset = (): void => {
-    setCode([]);
-  };
-
-  const handleDeleteSetting = (id: string): void => {
-    setCode((prev) => prev.filter((setting) => setting.id !== id));
-  };
-
   return (
     <List style={{ padding: 20 }}>
       <Typography.Title style={{ marginTop: 0 }}>Конструктор форм</Typography.Title>
@@ -22,11 +14,7 @@ const App = () => {
           <AdditionForm onCode={setCode} />
         </Col>
         <Col flex='auto'>
-          <CodeBlock
-            code={code}
-            onFormReset={handleCodeReset}
-            onDeleteSetting={handleDeleteSetting}
-          />
+          <CodeBlock codes={code} onCode={setCode} />
         </Col>
       </Row>
     </List>

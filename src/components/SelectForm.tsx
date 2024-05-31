@@ -1,12 +1,13 @@
-import { Button, Checkbox, Form, FormInstance, Input, Space, Typography } from 'antd';
-import { FC } from 'react';
+import { Button, Checkbox, Form, FormProps, Input, Space, Typography } from 'antd';
+import { FC, useEffect } from 'react';
 import { CloseOutlined } from '@ant-design/icons';
-import { SelectField } from '../types';
+import { Code, CodeTypes, SelectField } from '../types';
 import { requiredEntryRule } from '../constants';
+import { v4 as uuidv4 } from 'uuid';
 
-interface InputFormProps {
-  form: FormInstance<SelectField>;
-  onFormFinish: (values: SelectField) => void;
+interface SelectFormProps {
+  initValue?: Code;
+  onFormFinish: (values: Code) => void;
 }
 
 const fieldNames: Record<keyof SelectField, string> = {
@@ -16,11 +17,38 @@ const fieldNames: Record<keyof SelectField, string> = {
   options: 'options',
 };
 
-export const SelectForm: FC<InputFormProps> = ({ form, onFormFinish }) => {
+export const SelectForm: FC<SelectFormProps> = ({ initValue, onFormFinish }) => {
+  const [selectForm] = Form.useForm<SelectField>();
+
+  const handleFormFinish: FormProps['onFinish'] = ({
+    label,
+    name,
+    required,
+    options,
+  }: SelectField): void => {
+    onFormFinish({
+      type: CodeTypes.Select,
+      id: initValue?.id || uuidv4(),
+      data: { name, label, required, options },
+    });
+
+    selectForm.resetFields();
+  };
+
+  useEffect(() => {
+    if (initValue) {
+      const { data, type: codeType } = initValue;
+
+      if (codeType === CodeTypes.Select) {
+        selectForm.setFieldsValue(data);
+      }
+    }
+  }, [initValue]);
+
   return (
     <Space direction='vertical'>
       <Typography.Title level={5}>Добавить список</Typography.Title>
-      <Form form={form} onFinish={onFormFinish}>
+      <Form form={selectForm} onFinish={handleFormFinish}>
         <Form.Item label='Имя' name={fieldNames.name} rules={requiredEntryRule}>
           <Input size='small' placeholder='Введите имя' />
         </Form.Item>
@@ -57,7 +85,7 @@ export const SelectForm: FC<InputFormProps> = ({ form, onFormFinish }) => {
           <Checkbox />
         </Form.Item>
         <Button type='primary' htmlType='submit' size='small'>
-          Добавить
+          {initValue ? 'Изменить' : 'Добавить'}
         </Button>
       </Form>
     </Space>

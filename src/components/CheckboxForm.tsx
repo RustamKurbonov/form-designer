@@ -1,11 +1,12 @@
-import { Button, Checkbox, Form, FormInstance, Input, Space, Typography } from 'antd';
-import { FC } from 'react';
-import { CommonField } from '../types';
+import { Button, Checkbox, Form, FormProps, Input, Space, Typography } from 'antd';
+import { FC, useEffect } from 'react';
+import { Code, CodeTypes, CommonField } from '../types';
 import { requiredEntryRule } from '../constants';
+import { v4 as uuidv4 } from 'uuid';
 
 interface CheckboxFormProps {
-  form: FormInstance<CommonField>;
-  onFormFinish: (values: CommonField) => void;
+  initValue?: Code;
+  onFormFinish: (values: Code) => void;
 }
 
 const fieldNames: Record<keyof CommonField, string> = {
@@ -14,11 +15,37 @@ const fieldNames: Record<keyof CommonField, string> = {
   required: 'required',
 };
 
-export const CheckboxForm: FC<CheckboxFormProps> = ({ form, onFormFinish }) => {
+export const CheckboxForm: FC<CheckboxFormProps> = ({ initValue, onFormFinish }) => {
+  const [checkboxForm] = Form.useForm<CommonField>();
+
+  const handleFormFinish: FormProps['onFinish'] = ({
+    label,
+    name,
+    required,
+  }: CommonField): void => {
+    onFormFinish({
+      type: CodeTypes.Checkbox,
+      id: initValue?.id || uuidv4(),
+      data: { name, label, required },
+    });
+
+    checkboxForm.resetFields();
+  };
+
+  useEffect(() => {
+    if (initValue) {
+      const { data, type: codeType } = initValue;
+
+      if (codeType === CodeTypes.Checkbox) {
+        checkboxForm.setFieldsValue(data);
+      }
+    }
+  }, [initValue]);
+
   return (
     <Space direction='vertical'>
       <Typography.Title level={5}>Добавить чекбокс</Typography.Title>
-      <Form form={form} onFinish={onFormFinish}>
+      <Form form={checkboxForm} onFinish={handleFormFinish}>
         <Form.Item label='Имя' name={fieldNames.name} rules={requiredEntryRule}>
           <Input size='small' placeholder='Введите имя' />
         </Form.Item>
@@ -29,7 +56,7 @@ export const CheckboxForm: FC<CheckboxFormProps> = ({ form, onFormFinish }) => {
           <Checkbox />
         </Form.Item>
         <Button type='primary' htmlType='submit' size='small'>
-          Добавить
+          {initValue ? 'Изменить' : 'Добавить'}
         </Button>
       </Form>
     </Space>
