@@ -1,17 +1,16 @@
 import { Row, Col } from 'antd';
-import { Dispatch, FC, SetStateAction } from 'react';
-import { Code } from '../types';
+import { FC, useContext } from 'react';
+import { FormFragment } from '../types';
 import { InputForm } from './InputForm';
 import { SelectForm } from './SelectForm';
 import { CheckboxForm } from './CheckboxForm';
+import { CodeContext } from '../context/CodeContext';
 
-interface AdditionFormProps {
-  onCode: Dispatch<SetStateAction<Code[]>>;
-}
+export const AdditionForm: FC = () => {
+  const codeContext = useContext(CodeContext);
 
-export const AdditionForm: FC<AdditionFormProps> = ({ onCode }) => {
-  const handleFormFinish = (code: Code): void => {
-    onCode((prev) => [...prev, code]);
+  const handleFormFinish = (code: FormFragment): void => {
+    codeContext?.onFormFragment((prev) => [...prev, code]);
   };
 
   return (

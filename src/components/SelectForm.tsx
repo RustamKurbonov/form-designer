@@ -1,13 +1,13 @@
 import { Button, Checkbox, Form, FormProps, Input, Space, Typography } from 'antd';
 import { FC, useEffect } from 'react';
 import { CloseOutlined } from '@ant-design/icons';
-import { Code, CodeTypes, SelectField } from '../types';
+import { FormFragment, FragmentTypes, SelectField } from '../types';
 import { requiredEntryRule } from '../constants';
 import { v4 as uuidv4 } from 'uuid';
 
 interface SelectFormProps {
-  initValue?: Code;
-  onFormFinish: (values: Code) => void;
+  initValue?: FormFragment;
+  onFormFinish: (values: FormFragment) => void;
 }
 
 const fieldNames: Record<keyof SelectField, string> = {
@@ -27,7 +27,7 @@ export const SelectForm: FC<SelectFormProps> = ({ initValue, onFormFinish }) => 
     options,
   }: SelectField): void => {
     onFormFinish({
-      type: CodeTypes.Select,
+      type: FragmentTypes.Select,
       id: initValue?.id || uuidv4(),
       data: { name, label, required, options },
     });
@@ -39,7 +39,7 @@ export const SelectForm: FC<SelectFormProps> = ({ initValue, onFormFinish }) => 
     if (initValue) {
       const { data, type: codeType } = initValue;
 
-      if (codeType === CodeTypes.Select) {
+      if (codeType === FragmentTypes.Select) {
         selectForm.setFieldsValue(data);
       }
     }

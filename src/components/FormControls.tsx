@@ -1,20 +1,19 @@
 import { Col, Tag, Typography } from 'antd';
-import { Dispatch, FC, SetStateAction, useState } from 'react';
-import { Code } from '../types';
+import { FC, useContext, useState } from 'react';
 import { EditingForm } from './EditingForm';
+import { CodeContext } from '../context/CodeContext';
+import { FormFragment } from '../types';
 
-interface FormControlsProps {
-  codes: Code[];
-  onCode: Dispatch<SetStateAction<Code[]>>;
-}
+export const FormControls: FC = () => {
+  const [codeForEditing, setCodeForEditing] = useState<FormFragment>();
+  const codeContext = useContext(CodeContext);
 
-export const FormControls: FC<FormControlsProps> = ({ codes, onCode }) => {
-  const [codeForEditing, setCodeForEditing] = useState<Code>();
+  const formFragments = codeContext?.formFragments;
 
   const handleModalClose = (): void => setCodeForEditing(undefined);
 
   const handleDeleteSetting = (id: string): void => {
-    onCode((prev) => prev.filter((setting) => setting.id !== id));
+    codeContext?.onFormFragment((prev) => prev.filter((setting) => setting.id !== id));
   };
 
   return (
@@ -24,27 +23,25 @@ export const FormControls: FC<FormControlsProps> = ({ codes, onCode }) => {
           Форма
         </Typography.Title>
       </Col>
-      {codes.length > 0 && (
+      {Boolean(formFragments?.length) && (
         <Col span={24}>
           <Typography.Title level={5} style={{ marginTop: 0 }}>
             Список полей
           </Typography.Title>
-          {codes.map((code) => (
+          {formFragments?.map((fragment) => (
             <Tag
               closeIcon
-              onClose={() => handleDeleteSetting(code.id)}
-              key={code.id}
-              onClick={() => setCodeForEditing(code)}
+              onClose={() => handleDeleteSetting(fragment.id)}
+              key={fragment.id}
+              onClick={() => setCodeForEditing(fragment)}
               style={{ cursor: 'pointer' }}
             >
-              {code.data.name}
+              {fragment.data.name}
             </Tag>
           ))}
         </Col>
       )}
-      {codeForEditing && (
-        <EditingForm code={codeForEditing} onClose={handleModalClose} onCode={onCode} />
-      )}
+      {codeForEditing && <EditingForm code={codeForEditing} onClose={handleModalClose} />}
     </>
   );
 };

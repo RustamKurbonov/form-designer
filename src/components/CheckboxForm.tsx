@@ -1,12 +1,12 @@
 import { Button, Checkbox, Form, FormProps, Input, Space, Typography } from 'antd';
 import { FC, useEffect } from 'react';
-import { Code, CodeTypes, CommonField } from '../types';
+import { FormFragment, FragmentTypes, CommonField } from '../types';
 import { requiredEntryRule } from '../constants';
 import { v4 as uuidv4 } from 'uuid';
 
 interface CheckboxFormProps {
-  initValue?: Code;
-  onFormFinish: (values: Code) => void;
+  initValue?: FormFragment;
+  onFormFinish: (values: FormFragment) => void;
 }
 
 const fieldNames: Record<keyof CommonField, string> = {
@@ -24,7 +24,7 @@ export const CheckboxForm: FC<CheckboxFormProps> = ({ initValue, onFormFinish })
     required,
   }: CommonField): void => {
     onFormFinish({
-      type: CodeTypes.Checkbox,
+      type: FragmentTypes.Checkbox,
       id: initValue?.id || uuidv4(),
       data: { name, label, required },
     });
@@ -36,7 +36,7 @@ export const CheckboxForm: FC<CheckboxFormProps> = ({ initValue, onFormFinish })
     if (initValue) {
       const { data, type: codeType } = initValue;
 
-      if (codeType === CodeTypes.Checkbox) {
+      if (codeType === FragmentTypes.Checkbox) {
         checkboxForm.setFieldsValue(data);
       }
     }

@@ -1,4 +1,4 @@
-export enum CodeTypes {
+export enum FragmentTypes {
   Input = 'input',
   Select = 'select',
   Checkbox = 'checkbox',
@@ -19,22 +19,22 @@ export interface SelectField extends CommonField {
   options: { name: string; value: string }[];
 }
 
-export interface CheckboxCode {
-  type: CodeTypes.Checkbox;
+export interface Checkbox {
+  type: FragmentTypes.Checkbox;
   data: CommonField;
 }
 
-export interface InputCode {
-  type: CodeTypes.Input;
+export interface Input {
+  type: FragmentTypes.Input;
   data: InputField;
 }
 
-export interface SelectCode {
-  type: CodeTypes.Select;
+export interface Select {
+  type: FragmentTypes.Select;
   data: SelectField;
 }
 
-export type Code = {
+export type FormFragment = {
   id: string;
-  type: CodeTypes;
-} & (CheckboxCode | InputCode | SelectCode);
+  type: FragmentTypes;
+} & (Checkbox | Input | Select);

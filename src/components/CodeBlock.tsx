@@ -1,27 +1,24 @@
 import { Button, Col, Row, Tooltip } from 'antd';
 import { CopyOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Dispatch, FC, SetStateAction, useEffect, useRef, useState } from 'react';
+import { FC, useContext, useEffect, useRef, useState } from 'react';
 
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { Code } from '../types';
 import { copyToClipboard } from '../utils/copyToClipboard';
 import { FormControls } from './FormControls';
+import { CodeContext } from '../context/CodeContext';
 
-interface CodeBlockProps {
-  codes: Code[];
-  onCode: Dispatch<SetStateAction<Code[]>>;
-}
-
-export const CodeBlock: FC<CodeBlockProps> = ({ codes, onCode }) => {
+export const CodeBlock: FC = () => {
   const [messageAfterCopy, setMessageAfterCopy] = useState<string>('');
-
   const copyToClipboardTimeoutRef = useRef<number>();
+  const codeContext = useContext(CodeContext);
 
-  const formattedCode = `<form>\n${codes.map(({ data }) => data).join('\n')}\n</form>`;
+  const formFragments = codeContext?.formFragments;
+
+  const formattedForm = `<form>\n${formFragments?.map(({ data }) => data).join('\n')}\n</form>`;
 
   const handleCopyButtonClick = (): void => {
-    copyToClipboard(formattedCode.toString())
+    copyToClipboard(formattedForm.toString())
       .then(() => {
         setMessageAfterCopy('Текст скопирован');
         clearTimeout(copyToClipboardTimeoutRef.current);
@@ -37,9 +34,9 @@ export const CodeBlock: FC<CodeBlockProps> = ({ codes, onCode }) => {
       });
   };
 
-  console.log(codes, 'code');
+  const handleCodeReset = (): void => codeContext?.onFormFragment([]);
 
-  const handleCodeReset = (): void => onCode([]);
+  console.log(codeContext?.formFragments, 'formFragments');
 
   useEffect(() => {
     return () => clearTimeout(copyToClipboardTimeoutRef.current);
@@ -47,10 +44,10 @@ export const CodeBlock: FC<CodeBlockProps> = ({ codes, onCode }) => {
 
   return (
     <Row gutter={[0, 12]}>
-      <FormControls codes={codes} onCode={onCode} />
+      <FormControls />
       <Col span={24}>
         <SyntaxHighlighter language='react' style={docco}>
-          {formattedCode.toString()}
+          {formattedForm.toString()}
         </SyntaxHighlighter>
       </Col>
       <Col span={24}>
@@ -60,7 +57,7 @@ export const CodeBlock: FC<CodeBlockProps> = ({ codes, onCode }) => {
               type='link'
               icon={<CopyOutlined />}
               onClick={handleCopyButtonClick}
-              disabled={!codes.length}
+              disabled={!formFragments?.length}
             >
               Скопировать
             </Button>
@@ -69,7 +66,7 @@ export const CodeBlock: FC<CodeBlockProps> = ({ codes, onCode }) => {
             type='link'
             icon={<DeleteOutlined />}
             onClick={handleCodeReset}
-            disabled={!codes.length}
+            disabled={!formFragments?.length}
           >
             Очистить
           </Button>

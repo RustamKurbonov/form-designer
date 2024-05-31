@@ -1,23 +1,25 @@
 import { Modal } from 'antd';
-import { Dispatch, FC, ReactNode, SetStateAction } from 'react';
-import { Code, CodeTypes } from '../types';
+import { FC, ReactNode, useContext } from 'react';
 import { InputForm } from './InputForm';
 import { CheckboxForm } from './CheckboxForm';
 import { SelectForm } from './SelectForm';
+import { FormFragment, FragmentTypes } from '../types';
+import { CodeContext } from '../context/CodeContext';
 
 interface EditingFormProps {
-  code: Code;
+  code: FormFragment;
   onClose: () => void;
-  onCode: Dispatch<SetStateAction<Code[]>>;
 }
 
-export const EditingForm: FC<EditingFormProps> = ({ code, onClose, onCode }) => {
-  const handleFormFinish = (code: Code): void => {
-    onCode((prev) => [...prev.filter(({ id }) => id !== code.id), code]);
+export const EditingForm: FC<EditingFormProps> = ({ code, onClose }) => {
+  const codeContext = useContext(CodeContext);
+
+  const handleFormFinish = (code: FormFragment): void => {
+    codeContext?.onFormFragment((prev) => [...prev.filter(({ id }) => id !== code.id), code]);
     onClose();
   };
 
-  const forms: Record<CodeTypes, ReactNode> = {
+  const forms: Record<FragmentTypes, ReactNode> = {
     input: <InputForm onFormFinish={handleFormFinish} initValue={code} />,
     select: <SelectForm onFormFinish={handleFormFinish} initValue={code} />,
     checkbox: <CheckboxForm onFormFinish={handleFormFinish} initValue={code} />,
