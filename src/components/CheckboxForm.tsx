@@ -1,44 +1,24 @@
-import { Button, Checkbox, Form, FormProps, Input, Space, Typography } from 'antd';
-import { Dispatch, FC, SetStateAction } from 'react';
-import { Code, CommonSettings } from '../../../types';
+import { Button, Checkbox, Form, FormInstance, Input, Space, Typography } from 'antd';
+import { FC } from 'react';
+import { CommonField } from '../types';
 import { requiredEntryRule } from '../constants';
-import { v4 as uuidv4 } from 'uuid';
 
 interface CheckboxFormProps {
-  onCode: Dispatch<SetStateAction<Code[]>>;
+  form: FormInstance<CommonField>;
+  onFormFinish: (values: CommonField) => void;
 }
 
-const fieldNames: Record<keyof CommonSettings, string> = {
+const fieldNames: Record<keyof CommonField, string> = {
   name: 'name',
   label: 'label',
   required: 'required',
 };
 
-export const CheckboxForm: FC<CheckboxFormProps> = ({ onCode }) => {
-  const [checkboxForm] = Form.useForm<CommonSettings>();
-
-  const handleFormFinish: FormProps['onFinish'] = ({
-    name,
-    label,
-    required,
-  }: CommonSettings): void => {
-    onCode((prev) => [
-      ...prev,
-      {
-        name,
-        id: uuidv4(),
-        data: `<label>${label}</label>\n<input type="checkbox" name="${name}" ${required ? 'required' : ''} />\n`,
-        type: 'checkbox',
-      },
-    ]);
-
-    checkboxForm.resetFields();
-  };
-
+export const CheckboxForm: FC<CheckboxFormProps> = ({ form, onFormFinish }) => {
   return (
     <Space direction='vertical'>
       <Typography.Title level={5}>Добавить чекбокс</Typography.Title>
-      <Form form={checkboxForm} onFinish={handleFormFinish}>
+      <Form form={form} onFinish={onFormFinish}>
         <Form.Item label='Имя' name={fieldNames.name} rules={requiredEntryRule}>
           <Input size='small' placeholder='Введите имя' />
         </Form.Item>

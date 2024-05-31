@@ -1,47 +1,26 @@
-import { Button, Checkbox, Form, FormProps, Input, Space, Typography } from 'antd';
-import { Dispatch, FC, SetStateAction } from 'react';
-import { Code, SelectSettings } from '../../../types';
-import { requiredEntryRule } from '../constants';
+import { Button, Checkbox, Form, FormInstance, Input, Space, Typography } from 'antd';
+import { FC } from 'react';
 import { CloseOutlined } from '@ant-design/icons';
-import { v4 as uuidv4 } from 'uuid';
+import { SelectField } from '../types';
+import { requiredEntryRule } from '../constants';
 
 interface InputFormProps {
-  onCode: Dispatch<SetStateAction<Code[]>>;
+  form: FormInstance<SelectField>;
+  onFormFinish: (values: SelectField) => void;
 }
 
-const fieldNames: Record<keyof SelectSettings, string> = {
+const fieldNames: Record<keyof SelectField, string> = {
   name: 'name',
   label: 'label',
   required: 'required',
   options: 'options',
 };
 
-export const SelectForm: FC<InputFormProps> = ({ onCode }) => {
-  const [selectForm] = Form.useForm<SelectSettings>();
-
-  const handleFormFinish: FormProps['onFinish'] = ({
-    name,
-    label,
-    required,
-    options = [],
-  }: SelectSettings): void => {
-    onCode((prev) => [
-      ...prev,
-      {
-        name,
-        id: uuidv4(),
-        data: `<label>${label}</label>\n<select name="${name}" ${required ? 'required' : ''}>\n${options.map((option) => `<option value="${option.value}">${option.name}</option>`).join('\n')}\n</select>\n`,
-        type: 'select',
-      },
-    ]);
-
-    selectForm.resetFields();
-  };
-
+export const SelectForm: FC<InputFormProps> = ({ form, onFormFinish }) => {
   return (
     <Space direction='vertical'>
       <Typography.Title level={5}>Добавить список</Typography.Title>
-      <Form form={selectForm} onFinish={handleFormFinish}>
+      <Form form={form} onFinish={onFormFinish}>
         <Form.Item label='Имя' name={fieldNames.name} rules={requiredEntryRule}>
           <Input size='small' placeholder='Введите имя' />
         </Form.Item>

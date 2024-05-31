@@ -4,8 +4,8 @@ import { FC, useEffect, useRef, useState } from 'react';
 
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { copyToClipboard } from '../../utils/copyToClipboard';
-import { Code } from '../../types';
+import { Code } from '../types';
+import { copyToClipboard } from '../utils/copyToClipboard';
 
 interface CodeBlockProps {
   code: Code[];
@@ -36,6 +36,7 @@ export const CodeBlock: FC<CodeBlockProps> = ({ code, onFormReset, onDeleteSetti
         }, 3000);
       });
   };
+  console.log(code, 'code');
 
   useEffect(() => {
     return () => clearTimeout(copyToClipboardTimeoutRef.current);
@@ -53,7 +54,7 @@ export const CodeBlock: FC<CodeBlockProps> = ({ code, onFormReset, onDeleteSetti
           <Typography.Title level={5} style={{ marginTop: 0 }}>
             Список полей
           </Typography.Title>
-          {code.map(({ id, name }) => (
+          {code.map(({ id, data }) => (
             <Tag
               closeIcon
               onClose={() => onDeleteSetting(id)}
@@ -61,7 +62,7 @@ export const CodeBlock: FC<CodeBlockProps> = ({ code, onFormReset, onDeleteSetti
               onClick={() => console.log('tests')}
               style={{ cursor: 'pointer' }}
             >
-              {name}
+              {data.name}
             </Tag>
           ))}
         </Col>

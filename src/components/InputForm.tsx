@@ -1,14 +1,14 @@
-import { Button, Checkbox, Form, FormProps, Input, Select, Space, Typography } from 'antd';
-import { Dispatch, FC, SetStateAction } from 'react';
-import { Code, InputSettings } from '../../../types';
+import { Button, Checkbox, Form, FormInstance, Input, Select, Space, Typography } from 'antd';
+import { FC } from 'react';
+import { InputField } from '../types';
 import { requiredEntryRule } from '../constants';
-import { v4 as uuidv4 } from 'uuid';
 
 interface InputFormProps {
-  onCode: Dispatch<SetStateAction<Code[]>>;
+  form: FormInstance<InputField>;
+  onFormFinish: (values: InputField) => void;
 }
 
-const fieldNames: Record<keyof InputSettings, string> = {
+const fieldNames: Record<keyof InputField, string> = {
   name: 'name',
   label: 'label',
   required: 'required',
@@ -18,32 +18,11 @@ const fieldNames: Record<keyof InputSettings, string> = {
 
 const inputTypes: string[] = ['text', 'email', 'phone', 'number'];
 
-export const InputForm: FC<InputFormProps> = ({ onCode }) => {
-  const [inputForm] = Form.useForm<InputSettings>();
-
-  const handleFormFinish: FormProps['onFinish'] = ({
-    name,
-    label,
-    required,
-    placeholder,
-    type,
-  }: InputSettings): void => {
-    onCode((prev) => [
-      ...prev,
-      {
-        name,
-        id: uuidv4(),
-        data: `<label>${label}</label>\n<input type="${type}" placeholder="${placeholder}" name="${name}" ${required ? 'required' : ''} />\n`,
-        type: 'input',
-      },
-    ]);
-    inputForm.resetFields();
-  };
-
+export const InputForm: FC<InputFormProps> = ({ form, onFormFinish }) => {
   return (
     <Space direction='vertical'>
       <Typography.Title level={5}>Добавить текстовое поле</Typography.Title>
-      <Form form={inputForm} onFinish={handleFormFinish}>
+      <Form form={form} onFinish={onFormFinish}>
         <Form.Item label='Имя' name={fieldNames.name} rules={requiredEntryRule}>
           <Input size='small' placeholder='Введите имя' />
         </Form.Item>
